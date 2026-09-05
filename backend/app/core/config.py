@@ -46,6 +46,9 @@ class Settings(BaseSettings):
     prompts_dir: Path = _DEFAULT_PROMPTS_ROOT
     prompt_version: str = "v1"
 
+    frontend_url: str = "http://localhost:3000"
+    cors_origins: str = ""
+
     # Pipeline
     critic_threshold: int = 80        # минимальный score, ниже — перезапись
     max_critic_iterations: int = 3    # максимум итераций перезаписи

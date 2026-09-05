@@ -8,10 +8,21 @@ from app.core.logging import configure_logging
 configure_logging()
 settings = get_settings()
 
+_cors_origins = {
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    settings.frontend_url.rstrip("/"),
+}
+_cors_origins.update(
+    origin.strip().rstrip("/")
+    for origin in settings.cors_origins.split(",")
+    if origin.strip()
+)
+
 app = FastAPI(title="AI Resume Generator", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=sorted(_cors_origins),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
