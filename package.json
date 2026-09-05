@@ -6,6 +6,7 @@
     "frontend:dev": "npm --prefix frontend run dev",
     "frontend:build": "npm --prefix frontend run build",
     "frontend:typecheck": "npm --prefix frontend run typecheck",
+    "vercel-build": "npm run frontend:build && node scripts/copy-next-output.mjs",
     "backend:test": "python -m pytest backend/tests",
     "backend:lint": "python -m ruff check backend",
     "backend:typecheck": "python -m mypy backend/app"
