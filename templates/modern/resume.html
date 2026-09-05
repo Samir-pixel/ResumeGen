@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ resume.header.name }} — {{ resume.target_position }}</title>
+    <style>{{ css|safe }}</style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="identity">
+        <h1>{{ resume.header.name }}</h1>
+        <p class="identity-role">{{ resume.target_position }}</p>
+        <ul class="contacts">
+          {% if resume.header.city %}<li>{{ resume.header.city }}</li>{% endif %}
+          {% if resume.header.phone %}<li>{{ resume.header.phone }}</li>{% endif %}
+          {% if resume.header.telegram %}<li>{{ resume.header.telegram }}</li>{% endif %}
+          {% if resume.header.email %}<li class="wrap">{{ resume.header.email }}</li>{% endif %}
+        </ul>
+      </header>
+      <div class="rule" aria-hidden="true"></div>
+
+      <section class="section">
+        <h2>Профессиональный профиль</h2>
+        <p class="summary">{{ resume.summary }}</p>
+      </section>
+
+      <section class="section">
+        <h2>Ключевые навыки</h2>
+        <div class="skills">
+          {% for group, items in resume.skills.items() %}
+            <div class="skill-group">
+              <p class="skill-name">{{ group }}</p>
+              <p class="skill-items">{{ items | join(" · ") }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Опыт работы</h2>
+        <div class="jobs">
+          {% for item in resume.experience %}
+            <article class="job">
+              <div class="job-top">
+                <div>
+                  <h3>{{ item.company }}</h3>
+                  <p class="job-role">{{ item.role }}</p>
+                </div>
+                <p class="job-dates">{{ item.dates }}</p>
+              </div>
+              <p class="job-meta">{{ item.sector }}{% if item.location %} · {{ item.location }}{% endif %}</p>
+              <p class="job-about">{{ item.company_description }}</p>
+
+              <div class="job-block project">
+                <span class="label">Проект</span>
+                <p>{{ item.project_description }}</p>
+              </div>
+              <div class="job-block">
+                <span class="label">Команда</span>
+                <p>{{ item.team }}</p>
+              </div>
+
+              <ul class="bullets">
+                {% for bullet in item.bullets %}<li>{{ bullet }}</li>{% endfor %}
+              </ul>
+
+              <p class="tech">
+                <span class="label">Технологии</span>
+                {{ item.technologies | join(" · ") }}
+              </p>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      {% if resume.education or resume.languages %}
+        <div class="footer-grid">
+          {% if resume.education %}
+            <section class="section">
+              <h2>Образование</h2>
+              <div class="stack">
+                {% for entry in resume.education %}<p>{{ entry }}</p>{% endfor %}
+              </div>
+            </section>
+          {% endif %}
+
+          {% if resume.languages %}
+            <section class="section">
+              <h2>Языки</h2>
+              <div class="stack">
+                {% for language in resume.languages %}<p>{{ language }}</p>{% endfor %}
+              </div>
+            </section>
+          {% endif %}
+        </div>
+      {% endif %}
+    </main>
+  </body>
+</html>

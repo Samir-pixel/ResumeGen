@@ -1,0 +1,116 @@
+/* Classic template — традиционный академический стиль */
+@page {
+  size: A4;
+  margin: 18mm 16mm 16mm 20mm;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background: #fff;
+}
+
+.page { width: 100%; }
+
+/* Header */
+.header {
+  text-align: center;
+  border-bottom: 1.5px solid #2c3e50;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.target-position {
+  font-size: 11px;
+  font-style: italic;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+.contact-line {
+  font-size: 9.5px;
+  color: #555;
+}
+
+/* Section */
+.section { margin-bottom: 11px; }
+
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #2c3e50;
+  border-bottom: 0.75px solid #7f8c8d;
+  padding-bottom: 2px;
+  margin-bottom: 7px;
+}
+
+/* Summary */
+p.summary { font-size: 10px; line-height: 1.5; color: #222; }
+
+/* Skills */
+.skills-block { font-size: 10px; line-height: 1.6; }
+.skill-group { margin-bottom: 3px; }
+.skill-label { font-weight: 700; margin-right: 4px; }
+
+/* Experience */
+.role { margin-bottom: 11px; break-inside: avoid; }
+
+.role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.company-name { font-size: 11px; font-weight: 700; color: #2c3e50; }
+.role-dates { font-size: 9.5px; color: #555; font-style: italic; }
+
+.role-title {
+  font-size: 10.5px;
+  font-style: italic;
+  color: #333;
+  margin: 1px 0 2px;
+}
+
+.role-meta { font-size: 9.5px; color: #666; margin-bottom: 3px; }
+.role-desc { font-size: 10px; color: #333; margin-bottom: 3px; line-height: 1.45; }
+.project-note { font-size: 10px; color: #333; margin-bottom: 3px; }
+
+.bullets {
+  list-style: none;
+  padding: 0;
+  margin: 3px 0;
+}
+
+.bullets li {
+  font-size: 10px;
+  line-height: 1.45;
+  padding-left: 12px;
+  position: relative;
+  margin-bottom: 2px;
+  color: #1a1a1a;
+}
+
+.bullets li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: #7f8c8d;
+}
+
+.tech-line { font-size: 9.5px; color: #555; margin-top: 3px; font-style: italic; }
+.edu-item, .lang-item { font-size: 10px; line-height: 1.5; color: #222; }

@@ -1,0 +1,2 @@
+"""Resume generator backend package."""
+

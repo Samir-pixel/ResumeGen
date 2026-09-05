@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ resume.header.name }} — {{ resume.target_position }}</title>
+    <style>{{ css }}</style>
+  </head>
+  <body>
+    <div class="page">
+
+      <header class="header">
+        <h1>{{ resume.header.name }}</h1>
+        <p class="target-position">{{ resume.target_position }}</p>
+        <p class="contact-line">
+          {% set parts = [] %}
+          {% if resume.header.city %}{% set _ = parts.append(resume.header.city) %}{% endif %}
+          {% if resume.header.phone %}{% set _ = parts.append(resume.header.phone) %}{% endif %}
+          {% if resume.header.telegram %}{% set _ = parts.append(resume.header.telegram) %}{% endif %}
+          {% if resume.header.email %}{% set _ = parts.append(resume.header.email) %}{% endif %}
+          {{ parts | join(" · ") }}
+        </p>
+      </header>
+
+      <div class="section">
+        <div class="section-title">Профессиональный профиль</div>
+        <p class="summary">{{ resume.summary }}</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Ключевые навыки</div>
+        <div class="skills-block">
+          {% for group, items in resume.skills.items() %}
+            <div class="skill-group">
+              <span class="skill-label">{{ group }}:</span>{{ items | join(", ") }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Опыт работы</div>
+        {% for item in resume.experience %}
+          <div class="role">
+            <div class="role-header">
+              <span class="company-name">{{ item.company }}</span>
+              <span class="role-dates">{{ item.dates }}</span>
+            </div>
+            <p class="role-title">{{ item.role }}</p>
+            <p class="role-meta">{{ item.sector }} · {{ item.location }}</p>
+            <p class="role-desc">{{ item.company_description }}</p>
+            <p class="project-note"><em>Проект:</em> {{ item.project_description }}</p>
+            <p class="role-desc"><em>Команда:</em> {{ item.team }}</p>
+            <ul class="bullets">
+              {% for bullet in item.bullets %}
+                <li>{{ bullet }}</li>
+              {% endfor %}
+            </ul>
+            <p class="tech-line">Технологии: {{ item.technologies | join(", ") }}</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="section">
+        <div class="section-title">Образование</div>
+        {% for item in resume.education %}
+          <p class="edu-item">{{ item }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="section">
+        <div class="section-title">Языки</div>
+        {% for lang in resume.languages %}
+          <p class="lang-item">{{ lang }}</p>
+        {% endfor %}
+      </div>
+
+    </div>
+  </body>
+</html>

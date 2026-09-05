@@ -1,0 +1,169 @@
+/* ATS-friendly template — максимальная совместимость с парсерами */
+@page {
+  size: A4;
+  margin: 20mm 18mm 18mm 18mm;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Arial", "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: #1a1a1a;
+  background: #ffffff;
+}
+
+.page {
+  width: 100%;
+}
+
+/* Header */
+.header {
+  text-align: left;
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  line-height: 1.1;
+  color: #1a1a1a;
+  margin-bottom: 3px;
+}
+
+.target-position {
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.contact-line {
+  font-size: 9.5px;
+  color: #444;
+  margin-top: 3px;
+}
+
+/* Section */
+.section {
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #1a1a1a;
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 2px;
+  margin-bottom: 6px;
+}
+
+/* Summary */
+.summary {
+  font-size: 10px;
+  line-height: 1.5;
+  color: #222;
+}
+
+/* Skills — plain list, ATS-readable */
+.skills-block {
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.skill-group {
+  margin-bottom: 3px;
+}
+
+.skill-label {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+/* Experience */
+.role {
+  margin-bottom: 10px;
+  break-inside: avoid;
+}
+
+.role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1px;
+}
+
+.company-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.role-dates {
+  font-size: 9.5px;
+  color: #444;
+  white-space: nowrap;
+}
+
+.role-title {
+  font-size: 10.5px;
+  font-style: italic;
+  color: #222;
+  margin-bottom: 2px;
+}
+
+.role-meta {
+  font-size: 9.5px;
+  color: #555;
+  margin-bottom: 3px;
+}
+
+.role-desc {
+  font-size: 10px;
+  color: #333;
+  margin-bottom: 3px;
+  line-height: 1.45;
+}
+
+.project-note {
+  font-size: 10px;
+  color: #333;
+  margin-bottom: 3px;
+}
+
+.bullets {
+  list-style-type: disc;
+  padding-left: 16px;
+  margin: 3px 0;
+}
+
+.bullets li {
+  font-size: 10px;
+  line-height: 1.45;
+  margin-bottom: 2px;
+  color: #1a1a1a;
+}
+
+.tech-line {
+  font-size: 9.5px;
+  color: #444;
+  margin-top: 3px;
+}
+
+/* Education / Languages */
+.edu-item,
+.lang-item {
+  font-size: 10px;
+  line-height: 1.5;
+  color: #222;
+}
