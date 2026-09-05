@@ -7,7 +7,18 @@ export type {
   LanguageLevel,
 } from "@/types/resume";
 
-const BASE = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8000";
+function apiBase(): string {
+  const configured = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "");
+  if (configured) {
+    return configured;
+  }
+  if (process.env.NODE_ENV === "production") {
+    return "";
+  }
+  return "http://localhost:8000";
+}
+
+const BASE = apiBase();
 
 export async function createGeneration(
   vacancyText: string,
