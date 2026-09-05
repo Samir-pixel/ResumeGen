@@ -1,5 +1,5 @@
 {
   "framework": "nextjs",
   "installCommand": "cd .. && npm install",
-  "buildCommand": "cd .. && npm run vercel-build"
+  "buildCommand": "cd .. && npm run build --workspace=resume-generator-frontend && node scripts/copy-next-output.mjs"
 }

@@ -1,6 +1,5 @@
 {
   "framework": "nextjs",
   "installCommand": "npm install",
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "frontend/.next"
+  "buildCommand": "npm run build --workspace=resume-generator-frontend"
 }
