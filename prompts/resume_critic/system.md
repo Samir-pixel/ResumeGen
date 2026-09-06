@@ -7,7 +7,8 @@
 ## Оценки — каждое поле от 0 до 100
 
 ### `overall_score`
-Взвешенное среднее: `relevance` 35%, `professionalism` 20%, `naturalness` 15%, `technical_realism` 15%, `career_consistency` 10%, `ats_quality` 5%. Рассчитывай итог последовательно с этими весами.
+Числовой итог считает сервер по той же формуле: `relevance` 35%, `professionalism` 20%, `naturalness` 15%, `technical_realism` 15%, `career_consistency` 10%, `ats_quality` 5%.
+Твоя задача — найти конкретные дефекты для `issues`. Не занижай и не завышай баллы произвольно: итоговый `overall_score` всё равно пересчитает код.
 
 ### `relevance`
 Насколько резюме соответствует целевой позиции и обязательным навыкам.

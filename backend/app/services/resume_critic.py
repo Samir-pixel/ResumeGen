@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 
 from app.schemas import CareerProfile, CriticReport, ResumeDocument, VacancyAnalysis
+from app.services.quality_scorer import ResumeQualityScorer
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +44,21 @@ class ResumeCritic:
         profile: CareerProfile,
         resume: ResumeDocument,
     ) -> CriticReport:
-        if self.llm:
-            return await self._review_with_llm(analysis, profile, resume)
-        return self._review_heuristic(analysis, profile, resume)
+        report = ResumeQualityScorer().score(analysis, profile, resume)
+        if not self.llm:
+            return report
+        try:
+            llm_report = await self._review_with_llm(analysis, profile, resume)
+        except Exception:
+            logger.exception("ResumeCritic: LLM review failed; using deterministic score")
+            return report
+        extra = [
+            issue
+            for issue in llm_report.issues
+            if issue and issue not in report.issues
+        ]
+        report.issues.extend(extra[:8])
+        return report
 
     # ── LLM path ───────────────────────────────────────────────────────────────
 

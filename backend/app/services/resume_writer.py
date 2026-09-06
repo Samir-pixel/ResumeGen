@@ -70,9 +70,12 @@ class ResumeWriter:
         analysis: VacancyAnalysis,
         profile: CareerProfile,
         candidate_info: CandidateInfo | None = None,
+        feedback: list[str] | None = None,
     ) -> ResumeDocument:
         if self.llm:
-            return await self._write_with_llm(analysis, profile, candidate_info)
+            return await self._write_with_llm(
+                analysis, profile, candidate_info, feedback=feedback
+            )
         return self._write_heuristic(analysis, profile, candidate_info)
 
     # ── LLM path ───────────────────────────────────────────────────────────────
@@ -82,6 +85,7 @@ class ResumeWriter:
         analysis: VacancyAnalysis,
         profile: CareerProfile,
         candidate_info: CandidateInfo | None = None,
+        feedback: list[str] | None = None,
     ) -> ResumeDocument:
         system = self._load_prompt()
         candidate = profile.candidate
@@ -127,6 +131,12 @@ class ResumeWriter:
             f"Языки (копировать дословно): {', '.join(candidate.languages)}\n\n"
             f"Карьерный профиль:\n{_format_roles_for_prompt(roles_summary)}"
         )
+        if feedback:
+            context += (
+                "\n\nЗамечания редактора — исправь их в новом тексте, "
+                "не выдумывая факты и не меняя компании, образование и языки:\n"
+                + "\n".join(f"- {item}" for item in feedback)
+            )
 
         logger.info("ResumeWriter: LLM call")
         resume = await self.llm.generate(system, context, ResumeDocument)

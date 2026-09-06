@@ -50,8 +50,8 @@ class Settings(BaseSettings):
     cors_origins: str = ""
 
     # Pipeline
-    critic_threshold: int = 80        # минимальный score, ниже — перезапись
-    max_critic_iterations: int = 3    # максимум итераций перезаписи
+    critic_threshold: int = 70        # ниже порога — доработка или перегенерация
+    max_critic_iterations: int = 4    # максимум циклов оценка → правка
     max_consistency_retries: int = 2  # максимум попыток исправить карьеру
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")

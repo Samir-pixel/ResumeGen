@@ -15,6 +15,7 @@ from app.services.llm.base import LLMProvider, create_provider
 from app.services.pdf_renderer import PdfRenderer
 from app.services.pdf_validator import PdfValidator
 from app.services.realism_validator import RealismValidator
+from app.services.quality_scorer import PASS_THRESHOLD, ResumeQualityScorer
 from app.services.resume_critic import ResumeCritic
 from app.services.resume_writer import ResumeWriter
 from app.services.vacancy_analyzer import VacancyAnalyzer
@@ -158,7 +159,9 @@ class GenerationPipeline:
             )
             logger.info("Language realism score: %d", lang_realism.language_realism)
 
-            # ── 6. Критика + цикл перезаписи ─────────────────────────────────
+            # ── 6. Оценка по рубрике + доработка до порога ───────────────────
+            threshold = min(self.settings.critic_threshold, PASS_THRESHOLD)
+            scorer = ResumeQualityScorer()
             for iteration in range(self.settings.max_critic_iterations):
                 critic = await self._stage(
                     run,
@@ -172,34 +175,57 @@ class GenerationPipeline:
                 )
                 run.critic = critic
 
-                if critic.overall_score >= self.settings.critic_threshold:
+                if critic.overall_score >= threshold:
                     logger.info(
-                        "Critic score %d >= threshold %d — OK",
+                        "Quality score %d >= threshold %d — OK",
                         critic.overall_score,
-                        self.settings.critic_threshold,
+                        threshold,
                     )
                     break
 
-                if iteration < self.settings.max_critic_iterations - 1:
+                if iteration >= self.settings.max_critic_iterations - 1:
                     logger.warning(
-                        "Critic score %d < %d — переписываем (итерация %d)",
+                        "Финальный quality score: %d (порог %d). Замечания: %s",
                         critic.overall_score,
-                        self.settings.critic_threshold,
-                        iteration + 2,
+                        threshold,
+                        "; ".join(critic.issues[:5]),
                     )
-                    resume = await self._stage(
+                    break
+
+                remarks = list(critic.issues)
+                logger.warning(
+                    "Quality score %d < %d — доработка %d. Замечания: %s",
+                    critic.overall_score,
+                    threshold,
+                    iteration + 2,
+                    "; ".join(remarks[:5]),
+                )
+                if scorer.should_regenerate_career(critic):
+                    profile = await self._stage(
                         run,
-                        f"Доработка резюме (попытка {iteration + 2})",
-                        GenerationStatus.writing_resume,
-                        lambda: self.resume_writer.write(analysis, profile, candidate_info=candidate_info),
+                        f"Пересборка карьеры по замечаниям (попытка {iteration + 2})",
+                        GenerationStatus.generating_companies,
+                        lambda: self.career_generator.generate(
+                            analysis,
+                            candidate_info=candidate_info,
+                        ),
                     )
-                    run.resume = resume
-                else:
-                    logger.warning(
-                        "Финальный score критика: %d (порог %d)",
-                        critic.overall_score,
-                        self.settings.critic_threshold,
-                    )
+                    run.career_profile = profile
+
+                resume = await self._stage(
+                    run,
+                    f"Доработка резюме (попытка {iteration + 2})",
+                    GenerationStatus.writing_resume,
+                    lambda current_profile=profile, current_remarks=remarks: (
+                        self.resume_writer.write(
+                            analysis,
+                            current_profile,
+                            candidate_info=candidate_info,
+                            feedback=current_remarks,
+                        )
+                    ),
+                )
+                run.resume = resume
 
             # ── 7. HTML рендеринг ─────────────────────────────────────────────
             html_path = self.settings.generated_storage_dir / f"{run.generation_id}.html"
