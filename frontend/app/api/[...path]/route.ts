@@ -15,6 +15,8 @@ const HOP_BY_HOP = new Set([
   "upgrade",
   "host",
   "content-length",
+  "content-encoding",
+  "accept-encoding",
 ]);
 
 function backendBase(): string {
@@ -74,7 +76,10 @@ async function proxy(request: NextRequest, path: string[]): Promise<Response> {
     }
   });
 
-  return new Response(upstream.body, {
+  // fetch() already decodes gzip; forwarding content-encoding makes Chrome
+  // throw net::ERR_CONTENT_DECODING_FAILED and the UI shows "Failed to fetch".
+  const payload = await upstream.arrayBuffer();
+  return new Response(payload, {
     status: upstream.status,
     headers: responseHeaders,
   });

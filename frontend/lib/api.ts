@@ -24,22 +24,29 @@ export async function createGeneration(
   vacancyText: string,
   candidateInfo?: Partial<CandidateInfo>,
 ): Promise<{ generation_id: string; status: string }> {
-  const res = await fetch(`${BASE}/api/v1/generations`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      vacancy_text: vacancyText,
-      // Единый профессиональный шаблон. Значение сохранено для совместимости API.
-      template: "modern",
-      full_name: candidateInfo?.full_name ?? "",
-      city: candidateInfo?.city ?? "",
-      phone: candidateInfo?.phone ?? "",
-      telegram: candidateInfo?.telegram ?? "",
-      email: candidateInfo?.email ?? "",
-      education: candidateInfo?.education ?? [],
-      languages: candidateInfo?.languages ?? [],
-    }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}/api/v1/generations`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        vacancy_text: vacancyText,
+        // Единый профессиональный шаблон. Значение сохранено для совместимости API.
+        template: "modern",
+        full_name: candidateInfo?.full_name ?? "",
+        city: candidateInfo?.city ?? "",
+        phone: candidateInfo?.phone ?? "",
+        telegram: candidateInfo?.telegram ?? "",
+        email: candidateInfo?.email ?? "",
+        education: candidateInfo?.education ?? [],
+        languages: candidateInfo?.languages ?? [],
+      }),
+    });
+  } catch {
+    throw new Error(
+      "Не удалось связаться с сервером. Проверьте BACKEND_URL и что API на Render запущен.",
+    );
+  }
   if (!res.ok) {
     const detail = await res.json().catch(() => ({ detail: res.statusText }));
     const message =
