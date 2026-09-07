@@ -4,6 +4,7 @@ import {
   AlertCircle,
   CheckCircle2,
   Download,
+  Eraser,
   FileText,
   Loader2,
   RefreshCcw,
@@ -158,6 +159,10 @@ export default function Home() {
   const isRunning = isSubmitting || isPolling;
   const isCompleted = generation?.status === "completed";
   const isFailed = generation?.status === "failed";
+
+  function clearVacancy() {
+    setVacancy("");
+  }
   const currentPreviewUrl =
     isCompleted && generation?.generation_id
       ? previewUrl(generation.generation_id)
@@ -230,11 +235,24 @@ export default function Home() {
                   Вернуть пример
                 </button>
               </div>
-              <label>
-                <span className="mb-8 block text-body-sm text-obsidian/65">
-                  Текст вакансии
-                </span>
+              <div>
+                <div className="mb-8 flex items-center justify-between gap-12">
+                  <label htmlFor="vacancy-text" className="text-body-sm text-obsidian/65">
+                    Текст вакансии
+                  </label>
+                  <button
+                    type="button"
+                    id="clear-vacancy"
+                    disabled={isRunning || vacancy.length === 0}
+                    onClick={clearVacancy}
+                    className="inline-flex items-center gap-8 rounded-pills px-12 py-8 text-body-sm text-obsidian/55 transition-colors hover:bg-obsidian/5 hover:text-obsidian disabled:opacity-40"
+                  >
+                    <Eraser className="h-16 w-16" />
+                    Стереть
+                  </button>
+                </div>
                 <Textarea
+                  id="vacancy-text"
                   required
                   minLength={20}
                   value={vacancy}
@@ -243,7 +261,7 @@ export default function Home() {
                   placeholder="Вставьте описание вакансии..."
                   className="min-h-[320px]"
                 />
-              </label>
+              </div>
               <div className="flex items-start gap-12 rounded-medium bg-sulfur/65 p-16 text-body-sm">
                 <CheckCircle2 className="mt-2 h-18 w-18 shrink-0" />
                 <p>

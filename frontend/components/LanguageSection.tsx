@@ -3,7 +3,6 @@
 import { Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import type { LanguageEntry, LanguageLevel } from "@/types/resume";
 
@@ -12,6 +11,15 @@ interface LanguageSectionProps {
   disabled?: boolean;
   onChange: (entries: LanguageEntry[]) => void;
 }
+
+const LANGUAGE_OPTIONS = [
+  "Русский",
+  "Английский",
+  "Таджикский",
+  "Узбекский",
+  "Немецкий",
+  "Китайский",
+];
 
 const LEVELS: Array<{ value: LanguageLevel; label: string }> = [
   { value: "native", label: "Родной" },
@@ -22,6 +30,15 @@ const LEVELS: Array<{ value: LanguageLevel; label: string }> = [
   { value: "A2", label: "A2 — базовый" },
   { value: "A1", label: "A1 — начальный" },
 ];
+
+function nextLanguage(entries: LanguageEntry[]): string {
+  const used = new Set(entries.map((entry) => entry.language));
+  return LANGUAGE_OPTIONS.find((language) => !used.has(language)) ?? "";
+}
+
+function defaultLevel(language: string): LanguageLevel {
+  return language === "Русский" ? "native" : "B1";
+}
 
 export function LanguageSection({
   entries,
@@ -46,8 +63,11 @@ export function LanguageSection({
         <Button
           type="button"
           variant="secondary"
-          disabled={disabled}
-          onClick={() => onChange([...entries, { language: "", level: "B1" }])}
+          disabled={disabled || nextLanguage(entries) === ""}
+          onClick={() => {
+            const language = nextLanguage(entries);
+            onChange([...entries, { language, level: defaultLevel(language) }]);
+          }}
           className="gap-8 rounded-pills border-chalk/60 px-16 py-10 text-body-sm text-chalk hover:bg-chalk/10"
         >
           <Plus className="h-16 w-16" />
@@ -66,18 +86,36 @@ export function LanguageSection({
               key={index}
               className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_44px] items-end gap-12"
             >
-              <label className="min-w-0">
-                <span className="mb-8 block text-body-sm text-chalk/70">Язык</span>
-                <Input
-                  variant="dark"
-                  required
-                  disabled={disabled}
-                  value={entry.language}
-                  onChange={(event) => update(index, { language: event.target.value })}
-                  placeholder="Английский"
-                  className="py-18 pr-24"
-                />
-              </label>
+              <Select
+                label="Язык"
+                required
+                value={entry.language}
+                disabled={disabled}
+                onChange={(event) => update(index, { language: event.target.value })}
+                className="py-18"
+              >
+                <option value="" disabled className="bg-obsidian text-chalk">
+                  Выберите язык
+                </option>
+                {LANGUAGE_OPTIONS.map((language) => (
+                  <option
+                    key={language}
+                    value={language}
+                    disabled={entries.some(
+                      (other, otherIndex) =>
+                        otherIndex !== index && other.language === language,
+                    )}
+                    className="bg-obsidian text-chalk"
+                  >
+                    {language}
+                  </option>
+                ))}
+                {entry.language && !LANGUAGE_OPTIONS.includes(entry.language) ? (
+                  <option value={entry.language} className="bg-obsidian text-chalk">
+                    {entry.language}
+                  </option>
+                ) : null}
+              </Select>
               <Select
                 label="Уровень"
                 value={entry.level}

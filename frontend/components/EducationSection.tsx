@@ -4,6 +4,7 @@ import { Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import type { EducationEntry } from "@/types/resume";
 
 interface EducationSectionProps {
@@ -19,6 +20,17 @@ const EMPTY_EDUCATION: EducationEntry = {
   start_year: null,
   end_year: null,
 };
+
+const DEGREE_OPTIONS = [
+  "Среднее общее",
+  "Среднее профессиональное",
+  "Неоконченное высшее",
+  "Бакалавр",
+  "Специалист",
+  "Магистр",
+  "Кандидат наук",
+  "Доктор наук",
+];
 
 export function EducationSection({
   entries,
@@ -81,17 +93,27 @@ export function EducationSection({
                     className="py-18"
                   />
                 </label>
-                <label>
-                  <span className="mb-8 block text-body-sm text-chalk/70">Степень</span>
-                  <Input
-                    variant="dark"
-                    required
-                    value={entry.degree}
-                    onChange={(event) => update(index, { degree: event.target.value })}
-                    placeholder="Бакалавр"
-                    className="py-18"
-                  />
-                </label>
+                <Select
+                  label="Степень"
+                  required
+                  value={entry.degree}
+                  onChange={(event) => update(index, { degree: event.target.value })}
+                  className="py-18"
+                >
+                  <option value="" disabled className="bg-obsidian text-chalk">
+                    Выберите степень
+                  </option>
+                  {DEGREE_OPTIONS.map((degree) => (
+                    <option key={degree} value={degree} className="bg-obsidian text-chalk">
+                      {degree}
+                    </option>
+                  ))}
+                  {entry.degree && !DEGREE_OPTIONS.includes(entry.degree) ? (
+                    <option value={entry.degree} className="bg-obsidian text-chalk">
+                      {entry.degree}
+                    </option>
+                  ) : null}
+                </Select>
                 <label>
                   <span className="mb-8 block text-body-sm text-chalk/70">
                     Специальность
